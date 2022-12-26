@@ -1,9 +1,29 @@
 import tkinter as tk
 from tkinter import ttk
 from tkcalendar import DateEntry
+import requests
+
+# conectando com api, para pegar as moedas
+requisicao = requests.get("https://economia.awesomeapi.com.br/json/all")
+# o arquivo devolvido pelo site é um json, com isso fica melhora para trabalhar se transformar em dicionario
+dicionario_moedas = requisicao.json()
+
+# pegando as moedas que são as chaves do dicionario e transformando em lista
+# para ser usada na lista suspensa
+lista_moedas = list(dicionario_moedas.keys())
 
 
-lista_moedas = ["USD", "EUR"]
+def pegar_cotacao():
+    pass
+
+
+def selecionar_arq():
+    pass
+
+
+def atualizar_cotacoes():
+    pass
+
 
 janela = tk.Tk()
 
@@ -33,13 +53,7 @@ calendario_moeda = DateEntry(year=2022, locale='pt_br')
 calendario_moeda.grid(row=2, column=2, padx=10, pady=10, sticky="nsew")
 
 label_cotacao_unid = tk.Label(text="")
-label_cotacao_unid.grid(row=3, column=0, columnspan=2)
-
-
-def pegar_cotacao():
-    label_cotacao_resultado = tk.Label(text="Aqui")
-    label_cotacao_resultado.grid(row=3, column=0, columnspan=2, sticky="nsew")
-    pass
+label_cotacao_unid.grid(row=3, column=0, columnspan=2, sticky="nsew")
 
 
 botao_pg_cotacao = tk.Button(
@@ -58,11 +72,6 @@ label_cotacao_multi.grid(row=4, column=0, columnspan=3,
 label_selecionar_arq = tk.Label(
     text="Selecione um arquivo em Execel com as Moedas na Coluna A: ")
 label_selecionar_arq.grid(row=5, column=0, columnspan=2, sticky="nsew")
-
-
-def selecionar_arq():
-    pass
-
 
 botao_selecionar_arq = tk.Button(
     text="Clique para Selecionar", command=selecionar_arq, borderwidth=1, relief="solid")
@@ -85,17 +94,13 @@ label_data_final.grid(row=8, column=0)
 calendario_data_final = DateEntry(year=2022, locale='pt_br')
 calendario_data_final.grid(row=8, column=1, padx=10, pady=10, sticky="nsew")
 
-
-def atualizar_cotacoes():
-    pass
-
-
 botao_Atualizar_Cotacoes = tk.Button(
     text="Atualizar Cotações", command=atualizar_cotacoes, borderwidth=1, relief="solid")
 botao_Atualizar_Cotacoes.grid(row=9, column=0, padx=10, pady=10, sticky="nsew")
 
 label_arquivo_atualizado = tk.Label(text="")
-label_arquivo_atualizado.grid(row=9, column=1, columnspan=2, padx=10, pady=10, sticky="nsew")
+label_arquivo_atualizado.grid(
+    row=9, column=1, columnspan=2, padx=10, pady=10, sticky="nsew")
 
 botao_fechar = tk.Button(text="Fechar", command=janela.quit)
 botao_fechar.grid(row=10, column=2, padx=10, pady=10, sticky="nsew")
