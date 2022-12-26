@@ -9,9 +9,9 @@ janela = tk.Tk()
 
 janela.title("Sistema de Cotações de Moedas")
 
-label_cotação_unid = tk.Label(
+label_cotacao_unid = tk.Label(
     text="Cotações de Moedas", bg="grey", foreground="white", borderwidth=3, relief="solid")
-label_cotação_unid.grid(row=0, column=0, columnspan=3,
+label_cotacao_unid.grid(row=0, column=0, columnspan=3,
                         padx=10, pady=10, sticky="nsew")
 # padx=10, pady=10 - distançia superior e anterior
 
@@ -29,11 +29,15 @@ label_selecionar_data = tk.Label(
 label_selecionar_data.grid(
     row=2, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
 
-calendario_moeda = DateEntry(year=2022, locale="pt-br")
+calendario_moeda = DateEntry(year=2022, locale='pt_br')
 calendario_moeda.grid(row=2, column=2, padx=10, pady=10, sticky="nsew")
 
+label_cotacao_unid = tk.Label(text="")
+label_cotacao_unid.grid(row=3, column=0, columnspan=2)
 
 def pegar_cotacao():
+    label_cotacao_resultado = tk.Label(text="Aqui")
+    label_cotacao_resultado.grid(row=3, column=0, columnspan=2, sticky="nsew")
     pass
 
 
@@ -44,10 +48,15 @@ botao_pg_cotacao.grid(row=3, column=2)
 
 # cotação de varias moedas
 
-label_cotação_multi = tk.Label(text="Cotações de Multiplas Moedas",
+label_cotacao_multi = tk.Label(text="Cotações de Multiplas Moedas",
                                bg="grey", foreground="white", borderwidth=3, relief="solid")
-label_cotação_multi.grid(row=4, column=0, columnspan=3,
+label_cotacao_multi.grid(row=4, column=0, columnspan=3,
                          padx=10, pady=10, sticky="nsew")
+
+
+label_selecionar_arq = tk.Label(
+    text="Selecione um arquivo em Execel com as Moedas na Coluna A: ")
+label_selecionar_arq.grid(row=5, column=0, columnspan=2, sticky="nsew")
 
 
 def selecionar_arq():
@@ -56,7 +65,30 @@ def selecionar_arq():
 
 botao_selecionar_arq = tk.Button(
     text="Clique para Selecionar", command=selecionar_arq, borderwidth=1, relief="solid")
-botao_selecionar_arq.grid(row=6, column=2)
+botao_selecionar_arq.grid(row=5, column=2, padx=10, pady=10)
+
+label_arquivo_selecionado = tk.Label(text="")
+label_arquivo_selecionado.grid(row=6, column=0, columnspan=2, padx=10, pady=10, sticky="nsew")
+
+label_data_inicial = tk.Label(text="Data Inicial: ")
+label_data_inicial.grid(row=7, column=0)
+
+calendario_data_inicial = DateEntry(year=2022, locale='pt_br')
+calendario_data_inicial.grid(row=7, column=1, padx=10, pady=10, sticky="nsew")
+
+label_data_final = tk.Label(text="Data Inicial: ")
+label_data_final.grid(row=8, column=0)
+
+calendario_data_final = DateEntry(year=2022, locale='pt_br')
+calendario_data_final.grid(row=8, column=1, padx=10, pady=10, sticky="nsew")
+
+
+def atualizar_cotacoes ():
+    pass
+
+
+botao_Atualizar_Cotacoes = tk.Button(text="Atualizar Cotações", command=atualizar_cotacoes, borderwidth=1, relief="solid")
+botao_Atualizar_Cotacoes.grid(row=9, column=0, padx=10, pady=10, sticky="nsew")
 
 
 janela.mainloop()
