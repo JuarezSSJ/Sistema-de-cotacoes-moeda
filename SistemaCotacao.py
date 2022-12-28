@@ -1,7 +1,11 @@
 import tkinter as tk
 from tkinter import ttk
 from tkcalendar import DateEntry
+from tkinter.filedialog import askopenfilename
+import pandas as pd
 import requests
+from datetime import datetime
+import numpy as np
 
 # conectando com api, para pegar as moedas
 requisicao = requests.get("https://economia.awesomeapi.com.br/json/all")
@@ -14,15 +18,64 @@ lista_moedas = list(dicionario_moedas.keys())
 
 
 def pegar_cotacao():
-    pass
+    moeda_cotacao = combobox_selecionar_moedas.get()
+    data_cotacao = calendario_moeda.get()
+    data = data_cotacao[:2]
+    mes = data_cotacao[3:5]
+    ano = data_cotacao[6:]
+    link = f"https://economia.awesomeapi.com.br/json/daily/{moeda_cotacao}-BRL/?start_date={ano}{mes}{data}&end_date={ano}{mes}{data}"
+    requisicao_moeda = requests.get(link)
+    cotacao = requisicao_moeda.json()
+    valor_moeda = cotacao[0]['bid']
+    label_cotacao_unid['text'] = f"A cotação da {moeda_cotacao} no dia {data_cotacao} foi de: R${valor_moeda}"
 
 
 def selecionar_arq():
-    pass
+    endereco_arq = askopenfilename(
+        title="Selecione um arquivo em Excel para abrir:")
+    var_caminhoarquivo.set(endereco_arq)
+    if endereco_arq:
+        label_arquivo_selecionado["text"] = f"Arquivo Selecionado: {endereco_arq}"
 
 
 def atualizar_cotacoes():
-    pass
+
+    try:
+        # ler o dataframe de moedas
+        df = pd.read_excel(var_caminhoarquivo.get())
+        moedas = df.iloc[:, 0]
+        # pegar a data de inicio e data de fim das cotacoes
+        data_inicial = calendario_data_inicial.get()
+        data_final = calendario_data_final.get()
+        ano_inicial = data_inicial[-4:]
+        mes_inicial = data_inicial[3:5]
+        dia_inicial = data_inicial[:2]
+
+        ano_final = data_final[-4:]
+        mes_final = data_final[3:5]
+        dia_final = data_final[:2]
+
+        for moeda in moedas:
+            link2 = f"https://economia.awesomeapi.com.br/json/daily/{moeda}-BRL/?start_date={ano_inicial}{mes_inicial}{dia_inicial}&end_date={ano_final}{mes_final}{dia_final}"
+            # link = f"https://economia.awesomeapi.com.br/json/daily/{moeda}-BRL/?" \
+            # f"start_date={ano_inicial}{mes_inicial}{dia_inicial}&" \
+            # f"end_date={ano_final}{mes_final}{dia_final}"
+
+            requisicao_moeda = requests.get(link2)
+            cotacoes = requisicao_moeda.json()
+            for cotacao in cotacoes:
+                timestamp = int(cotacao['timestamp'])
+                bid = float(cotacao['bid'])
+                data = datetime.fromtimestamp(timestamp)
+                data = data.strftime('%d/%m/%Y')
+                if data not in df:
+                    df[data] = np.nan
+
+                df.loc[df.iloc[:, 0] == moeda, data] = bid
+        df.to_excel("Teste.xlsx")
+        label_arquivo_atualizado['text'] = "Arquivo Atualizado com Sucesso"
+    except:
+        label_arquivo_atualizado['text'] = "Selecione um arquivo Excel no Formato Correto"
 
 
 janela = tk.Tk()
@@ -67,7 +120,7 @@ label_cotacao_multi = tk.Label(text="Cotações de Multiplas Moedas",
                                bg="grey", foreground="white", borderwidth=3, relief="solid")
 label_cotacao_multi.grid(row=4, column=0, columnspan=3,
                          padx=10, pady=10, sticky="nsew")
-
+var_caminhoarquivo = tk.StringVar()
 
 label_selecionar_arq = tk.Label(
     text="Selecione um arquivo em Execel com as Moedas na Coluna A: ")
@@ -88,7 +141,7 @@ label_data_inicial.grid(row=7, column=0)
 calendario_data_inicial = DateEntry(year=2022, locale='pt_br')
 calendario_data_inicial.grid(row=7, column=1, padx=10, pady=10, sticky="nsew")
 
-label_data_final = tk.Label(text="Data Inicial: ", anchor="e")
+label_data_final = tk.Label(text="Data Final: ", anchor="e")
 label_data_final.grid(row=8, column=0)
 
 calendario_data_final = DateEntry(year=2022, locale='pt_br')
