@@ -54,9 +54,11 @@ def atualizar_cotacoes():
         ano_final = data_final[-4:]
         mes_final = data_final[3:5]
         dia_final = data_final[:2]
-
+        dias_test_inicio = (f"{dia_inicial}{mes_inicial}{ano_inicial}")
+        dias_test_final = (f"{dia_final}{mes_final}{ano_final}")
+        dias = int(dias_test_final) - int(dias_test_inicio)
         for moeda in moedas:
-            link2 = f"https://economia.awesomeapi.com.br/json/daily/{moeda}-BRL/?start_date={ano_inicial}{mes_inicial}{dia_inicial}&end_date={ano_final}{mes_final}{dia_final}"
+            link2 = f"https://economia.awesomeapi.com.br/json/daily/{moeda}-BRL/{dias}?start_date={ano_inicial}{mes_inicial}{dia_inicial}&end_date={ano_final}{mes_final}{dia_final}"
             # link = f"https://economia.awesomeapi.com.br/json/daily/{moeda}-BRL/?" \
             # f"start_date={ano_inicial}{mes_inicial}{dia_inicial}&" \
             # f"end_date={ano_final}{mes_final}{dia_final}"
@@ -66,13 +68,15 @@ def atualizar_cotacoes():
             for cotacao in cotacoes:
                 timestamp = int(cotacao['timestamp'])
                 bid = float(cotacao['bid'])
+            #    print(cotacao, bid)
                 data = datetime.fromtimestamp(timestamp)
+            #    print(data)
                 data = data.strftime('%d/%m/%Y')
                 if data not in df:
                     df[data] = np.nan
 
                 df.loc[df.iloc[:, 0] == moeda, data] = bid
-        df.to_excel("Teste.xlsx")
+        df.to_excel("Teste.xlsx")   
         label_arquivo_atualizado['text'] = "Arquivo Atualizado com Sucesso"
     except:
         label_arquivo_atualizado['text'] = "Selecione um arquivo Excel no Formato Correto"
