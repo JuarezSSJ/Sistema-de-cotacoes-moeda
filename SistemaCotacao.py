@@ -76,7 +76,7 @@ def atualizar_cotacoes():
                     df[data] = np.nan
 
                 df.loc[df.iloc[:, 0] == moeda, data] = bid
-        df.to_excel("Teste.xlsx")   
+        df.to_excel("Teste.xlsx")
         label_arquivo_atualizado['text'] = "Arquivo Atualizado com Sucesso"
     except:
         label_arquivo_atualizado['text'] = "Selecione um arquivo Excel no Formato Correto"
