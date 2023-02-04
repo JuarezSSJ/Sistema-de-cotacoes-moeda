@@ -68,14 +68,21 @@ def atualizar_cotacoes():
             for cotacao in cotacoes:
                 timestamp = int(cotacao['timestamp'])
                 bid = float(cotacao['bid'])
-            #    print(cotacao, bid)
                 data = datetime.fromtimestamp(timestamp)
-            #    print(data)
                 data = data.strftime('%d/%m/%Y')
+                
                 if data not in df:
                     df[data] = np.nan
+                    df.loc[df.iloc[:, 0] == moeda, data] = bid
+                    
+        # usar o método melt para transformar a coluna "Moedas" em linhas
+        df = df.melt(id_vars='Moedas', var_name='Data', value_name='Valor')
 
-                df.loc[df.iloc[:, 0] == moeda, data] = bid
+        # colocar a coluna "Moedas" como índice
+        df = df.set_index(['Data', 'Moedas'])
+
+        # usar o método unstack para transformar linhas em colunas
+        df = df.unstack(level=-1)
         df.to_excel("Teste.xlsx")
         label_arquivo_atualizado['text'] = "Arquivo Atualizado com Sucesso"
     except:
@@ -142,13 +149,13 @@ label_arquivo_selecionado.grid(
 label_data_inicial = tk.Label(text="Data Inicial: ", anchor="e")
 label_data_inicial.grid(row=7, column=0)
 
-calendario_data_inicial = DateEntry(year=2022, locale='pt_br')
+calendario_data_inicial = DateEntry(year=2023, locale='pt_br')
 calendario_data_inicial.grid(row=7, column=1, padx=10, pady=10, sticky="nsew")
 
 label_data_final = tk.Label(text="Data Final: ", anchor="e")
 label_data_final.grid(row=8, column=0)
 
-calendario_data_final = DateEntry(year=2022, locale='pt_br')
+calendario_data_final = DateEntry(year=2023, locale='pt_br')
 calendario_data_final.grid(row=8, column=1, padx=10, pady=10, sticky="nsew")
 
 botao_Atualizar_Cotacoes = tk.Button(
