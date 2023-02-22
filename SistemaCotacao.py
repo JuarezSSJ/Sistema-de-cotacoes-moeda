@@ -44,6 +44,7 @@ def atualizar_cotacoes():
         # ler o dataframe de moedas
         df = pd.read_excel(var_caminhoarquivo.get())
         moedas = df.iloc[:, 0]
+    
         # pegar a data de inicio e data de fim das cotacoes
         data_inicial = calendario_data_inicial.get()
         data_final = calendario_data_final.get()
@@ -80,7 +81,7 @@ def atualizar_cotacoes():
 
         # usar o método unstack para transformar linhas em colunas
         df = df.unstack(level=-1)
-        
+            
         df.to_excel("Teste.xlsx")
         label_arquivo_atualizado['text'] = "Arquivo Atualizado com Sucesso"
     except:
